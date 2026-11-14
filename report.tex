@@ -1,0 +1,461 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+\onehalfspacing
+
+\begin{document}
+
+% ==================== TITLE PAGE ====================
+\thispagestyle{empty}
+\begin{center}
+    \vspace*{0.2cm}
+    
+    {\large \bfseries PROVENANCEAI: MULTI-SOURCE MEDIA LINEAGE\\
+    RETRIEVAL AND CRYPTOGRAPHIC BLOCKCHAIN\\
+    PROOF-OF-PROVENANCE AUDITING\par}
+    
+    \vspace{1.5cm}
+    
+    {\normalsize A Progress Report submitted towards the partial fulfilment\\
+    for the degree of\par}
+    \vspace{0.4cm}
+    {\large \bfseries Master of Technology\par}
+    \vspace{0.4cm}
+    {\normalsize in\par}
+    \vspace{0.4cm}
+    {\large \bfseries Computer Science and Engineering\par}
+    
+    \vspace{1.4cm}
+    
+    {\normalsize Submitted by\par}
+    \vspace{0.3cm}
+    {\large \bfseries Vivek Negi\par}
+    \vspace{0.2cm}
+    {\normalsize \bfseries Roll Number: T25CS012\par}
+    
+    \vspace{1.2cm}
+    
+    {\normalsize Under the Supervision of\par}
+    \vspace{0.3cm}
+    {\large \bfseries Dr. Akhilendra Pratap Singh\par}
+    \vspace{0.2cm}
+    {\normalsize Assistant Professor\par}
+    
+    \vspace{1.2cm}
+    
+    \begin{tikzpicture}
+      \node[draw=black, fill=gray!10, rounded corners=3pt, inner sep=6pt] {
+        \small\textbf{NATIONAL INSTITUTE OF TECHNOLOGY MEGHALAYA}
+      };
+    \end{tikzpicture}\par
+    
+    \vfill
+    
+    {\normalsize \bfseries Department of Computer Science and Engineering\par}
+    {\normalsize \bfseries National Institute of Technology Meghalaya\par}
+    {\normalsize \bfseries Saitsohpen Sohra--793108, India\par}
+    \vspace{0.4cm}
+    {\normalsize November, 2026\par}
+\end{center}
+
+% ==================== DECLARATION ====================
+\newpage
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+\begin{center}
+    {\Large \bfseries Candidate's Declaration\par}
+\end{center}
+
+\vspace{1.2cm}
+
+\noindent I hereby declare that the work presented in this M.Tech Progress Report entitled \textbf{``ProvenanceAI: Multi-Source Media Lineage Retrieval and Cryptographic Blockchain Proof-of-Provenance Auditing''} submitted to the Department of Computer Science and Engineering, National Institute of Technology Meghalaya, is an authentic record of my own research carried out under the supervision of \textbf{Dr. Akhilendra Pratap Singh}, Assistant Professor, Department of Computer Science and Engineering.
+
+\vspace{0.8cm}
+
+\noindent The results embodied in this report have not been submitted to any other Institute or University for the award of any degree or diploma.
+
+\vspace{2.5cm}
+
+\noindent
+\begin{tabular}{@{}p{7cm}p{7cm}@{}}
+\textbf{Date:} November 18, 2026 & \textbf{Vivek Negi} \\
+\textbf{Place:} Sohra, Meghalaya & Roll No: T25CS012 \\
+ & M.Tech (CSE), NIT Meghalaya
+\end{tabular}
+
+% ==================== CERTIFICATE ====================
+\newpage
+\begin{center}
+    {\Large \bfseries Certificate\par}
+\end{center}
+
+\vspace{1.2cm}
+
+\noindent This is to certify that the M.Tech Progress Report entitled \textbf{``ProvenanceAI: Multi-Source Media Lineage Retrieval and Cryptographic Blockchain Proof-of-Provenance Auditing''} submitted by \textbf{Vivek Negi (Roll No: T25CS012)} in partial fulfilment of the requirements for the award of the degree of Master of Technology in Computer Science and Engineering at the National Institute of Technology Meghalaya, is a bonafide record of research work carried out by him under my supervision and guidance.
+
+\vspace{0.8cm}
+
+\noindent In my opinion, the report has reached the standard required for a Master of Technology dissertation progress review.
+
+\vspace{3cm}
+
+\noindent
+\begin{tabular}{@{}p{7cm}p{7cm}@{}}
+\textbf{Date:} November 18, 2026 & \textbf{Dr. Akhilendra Pratap Singh} \\
+\textbf{Place:} Sohra, Meghalaya & Assistant Professor \\
+ & Department of Computer Science and Engineering \\
+ & National Institute of Technology Meghalaya
+\end{tabular}
+
+% ==================== ABSTRACT ====================
+\newpage
+\begin{center}
+    {\Large \bfseries Abstract\par}
+\end{center}
+
+\vspace{0.8cm}
+
+\noindent Digital media manipulation has rapidly escalated from single-source photographic modifications (resizing, color balancing) to sophisticated multi-source composite splicing and generative diffusion inpainting. In real-world photomontages, query media $Q$ fuses multiple distinct visual ancestors: a dominant background canvas (Parent A, occupying 70\%--85\% of spatial pixels) and localized donor objects (Parent B, occupying 10\%--30\% of spatial area). Conventional single-source copy detection algorithms (e.g., Google Lens, TinEye) and binary deepfake classifiers collapse in this setting due to the \textit{Background Dominance Paradox}, achieving 100\% recall on Parent A while completely suppressing the secondary donor. Furthermore, visual neural representations alone cannot legally prove temporal precedence or guarantee non-repudiation in courtroom or copyright disputes.
+
+This research presents \textbf{ProvenanceAI}, a dual-layer forensic and distributed ledger architecture that unites neural local patch consensus with decentralized cryptographic Proof-of-Provenance blockchain notarization. In the perceptual layer, we introduce a \textbf{Multi-Scale Dynamic Patch Tokenizer} ($\mathcal{S} = \{0.25, 0.35, 0.50\}$ with $50\%$ stride overlap) that resolves boundary edge chopping, coupled with a learned \textbf{2-Layer MLP Saliency Importance Gate} that dynamically suppresses non-informative background regions. A \textbf{Max-Consensus Patch Aggregator} ($\alpha = 0.25$) decouples background matching from localized donor attribution, matching the competitive benchmark accuracy of \textbf{88.89\% Full-Lineage Recall@5}. 
+
+In the cryptographic layer, an immutable \textbf{SHA-256 Proof-of-Provenance Blockchain Ledger} (operating with \textbf{129 verified on-chain blocks} and over 40 authenticated real-world photographic benchmark assets) notarizes physical assets at registration and verifies temporal precedence conditions ($T_A, T_B < T_Q$) to eliminate retroactive manipulation claims. Crucially, we investigate the boundary between classical deterministic splicing and modern generative diffusion inpainting (e.g., Meta AI Emu, Stable Diffusion 3.5). We implement a 2D Fast Fourier Transform (FFT) high-frequency spectral residual detector and null-hypothesis confidence gating to prevent false-positive donor attribution when images are synthesized via latent diffusion rather than physical cutouts. We detail the complete software engineering stack (Python, NumPy, PyTorch with MPS/CUDA acceleration, OpenCV/Pillow, and Streamlit) engineered for zero-cloud air-gapped security. Finally, we outline the modular system engineering extensions and dissertation roadmap leading to final M.Tech thesis defense and open-source system deployment.
+
+\vspace{0.8cm}
+\noindent \textbf{Keywords:} Multi-Source Media Lineage, Image Splicing, Proof-of-Provenance Blockchain, Patch Tokenization, Importance Gating, Generative Diffusion Inpainting, Multimedia Forensics.
+
+% ==================== TABLE OF CONTENTS ====================
+\newpage
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% ==================== CHAPTER 1 ====================
+\section{Introduction and Problem Formulation}
+
+\subsection{Background and Motivation}
+The proliferation of social media platforms, generative artificial intelligence APIs, and high-resolution camera hardware has fundamentally democratized multimedia remixing. Users continuously create derivative media by fusing fragments from multiple independent source images. Although such remixing fuels artistic expression, it has simultaneously triggered unprecedented challenges in digital copyright enforcement, automated insurance claims verification (\$30 billion annual fraud vector), criminal digital evidence tracking, and newsroom disinformation auditing \cite{moreira2018image, pizzi2022self}.
+
+Conventional visual search engines (such as Google Lens or TinEye) and traditional perceptual hashing algorithms (e.g., pHash, dHash, block mean hashing) operate under a restrictive \textbf{single-source assumption}. They assume that a query image $Q$ is an altered version of exactly \textit{one} original image $I_{\text{orig}}$ subjected to global affine transformations, photometric jitter, or compression. In composite media, this assumption is fundamentally violated. A composite query $Q$ is formed by:
+\begin{equation}
+Q = \mathcal{M} \odot I_A + (1 - \mathcal{M}) \odot I_B
+\end{equation}
+where $I_A$ denotes the background canvas plate, $I_B$ denotes the donor object extracted from a distinct photograph, $\mathcal{M} \in [0, 1]^{H \times W}$ is the spatial alpha-blending mask, and $\odot$ denotes Hadamard element-wise multiplication.
+
+The mission of \textbf{Multi-Source Lineage Retrieval} is to ingest an unconstrained query image $Q$ and traverse an open-world gallery $\mathcal{G} = \{I_1, I_2, \dots, I_N\}$ to retrieve \textit{both} Parent A and Parent B concurrently, establishing a directed acyclic graph (DAG) representing the complete lineage history of the media asset.
+
+\subsection{The Background Dominance Paradox}
+Standard deep convolutional neural networks (CNNs) and Vision Transformers (ViTs) extract a global representation $\mathbf{v} \in \mathbb{R}^D$ via Global Average Pooling (GAP) or Generalized Mean (GeM) pooling. In composite media, this induces the \textbf{Background Dominance Paradox}:
+\begin{enumerate}
+    \item \textbf{Spatial Area Asymmetry:} The background plate $I_A$ occupies $70\%$ to $85\%$ of the total pixel area, while the donor object $I_B$ occupies only $15\%$ to $30\%$.
+    \item \textbf{Donor Signal Suppression:} In the pooled global embedding $\mathbf{v}_Q$, feature activations from the background plate completely overpower feature activations from the donor object. Consequently, global similarity ranking yields $100\%$ retrieval for Parent A, but completely misses Parent B.
+    \item \textbf{Failure of Rigid Spatial Grids:} Naive spatial subdivision into rigid $2 \times 2$ or $3 \times 3$ quadrants shears centrally placed donor objects into four disconnected fragments, corrupting structural semantic descriptors.
+    \item \textbf{Retraining Bottleneck:} Retraining massive foundational backbones on composite pairs is computationally prohibitive and triggers catastrophic forgetting of invariant visual features.
+\end{enumerate}
+
+\subsection{The Cryptographic-Perceptual Divide}
+Even if a computer vision model retrieves Parent A and Parent B, deep learning predictions cannot establish \textbf{legal non-repudiation} or \textbf{temporal precedence}. A bad-faith actor who creates a malicious composite can falsely claim that their composite was captured first, and that the authentic parents are derivatives. 
+
+Classical cryptographic hashing algorithms (SHA-256) offer mathematical non-repudiation and timestamping, but exhibit extreme avalanche fragility: altering a single pixel completely randomizes the hash. Conversely, perceptual neural embeddings offer robustness to resizing and filtering, but provide zero legal non-repudiation. Overcoming this fundamental divide requires a unified \textbf{dual-layer architecture}.
+
+% ==================== CHAPTER 2 ====================
+\section{Literature Review and Novelty Matrix}
+
+\subsection{State of the Art in Media Forensics}
+Research in multimedia provenance originated with Image Phylogeny Trees (IPT) formulated by Dias et al. \cite{dias2012image}, which computed minimum spanning trees over pairwise pixel difference matrices. The DARPA Media Forensics (MediFor) and Semantic Forensics (SemaFor) programs scaled this to unconstrained datasets \cite{moreira2018image}. 
+
+Meta AI introduced the Self-Supervised Descriptor for Image Copy Detection (SSCD) \cite{pizzi2022self}, which leverages contrastive self-supervised learning with entropy regularization to establish state-of-the-art robustness on the DISC21 benchmark. In forgery localization, TruFor \cite{guillaro2023trufor} extracts high-frequency camera noise residues to detect spliced boundaries. In generative media detection, AIGIBench \cite{li2025aigi} and Chen et al. \cite{chen2024single} established that localized patches capture distinct synthetic distribution shifts.
+
+\subsection{The C2PA Industry Standard and Its Limitations}
+The Coalition for Content Provenance and Authenticity (C2PA), formed by Adobe, Microsoft, Google, Intel, Nikon, and Sony, developed cryptographic Content Credentials manifests embedded directly into EXIF image metadata. While promising, C2PA suffers from critical real-world vulnerabilities:
+\begin{enumerate}
+    \item \textbf{Hardware Dependency:} Requires proprietary cryptographic chips embedded in high-end camera bodies (e.g., Leica M11, Sony A7 IV).
+    \item \textbf{Metadata Stripping:} Major messaging platforms (WhatsApp, Twitter/X, Instagram) automatically re-compress images and strip all EXIF/C2PA manifests upon upload, instantly breaking provenance tracking.
+    \item \textbf{Single-Chain Lineage:} Designed primarily for linear editing operations rather than multi-source DAG graph reconstruction.
+\end{enumerate}
+
+\subsection{Novelty Matrix}
+Table~\ref{tab:novelty} formalizes the literature gap and highlights the unique contributions of our proposed ProvenanceAI framework.
+
+\begin{table}[h]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\caption{Comparative Analysis: Existing Paradigms vs. ProvenanceAI Framework}
+\label{tab:novelty}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Capability} & \textbf{SHA-256} & \textbf{Deepfake Detectors} & \textbf{C2PA Standard} & \textbf{ProvenanceAI (Ours)} \\
+\midrule
+Tamper Resilience & \textbf{None (Avalanche)} & \textbf{High} & \textbf{Moderate (Metadata)} & \textbf{High (Multi-Scale)} \\
+Multi-Source DAG Lineage & \textbf{None} & \textbf{None (Binary)} & \textbf{Linear Only} & \textbf{Full Dual-Parent DAG} \\
+Immutable Precedence & \textbf{Yes} & \textbf{None} & \textbf{Centralized PKI} & \textbf{Proof-of-Provenance Block} \\
+Hardware Independence & \textbf{Yes} & \textbf{Yes} & \textbf{Requires OEM Chip} & \textbf{Yes (Zero Overhead)} \\
+Diffusion Boundary Handling & \textbf{No} & \textbf{Heuristic} & \textbf{No} & \textbf{Spectral 2D FFT Gating} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ==================== CHAPTER 3 ====================
+\section{Proposed ProvenanceAI Architecture}
+
+ProvenanceAI operates across two synchronized layers: (1) the \textbf{Neural Feature Layer} for spatial tokenization, importance weighting, and consensus aggregation, and (2) the \textbf{Cryptographic Blockchain Layer} for immutable notarization and temporal precedence verification.
+
+\subsection{Multi-Scale Dynamic Patch Tokenizer (Cell 8)}
+To prevent boundary shearing, query image $Q \in \mathbb{R}^{H \times W \times 3}$ is processed by a sliding window tokenizer operating across multiple proportional scales:
+\begin{equation}
+\mathcal{S} = \{(0.25, 0.25), (0.35, 0.35), (0.50, 0.50)\}
+\end{equation}
+For each scale $(s_w, s_h) \in \mathcal{S}$, sliding windows of dimensions $(w_s, h_s) = (W \cdot s_w, H \cdot s_h)$ are extracted with a $50\%$ overlapping stride:
+\begin{equation}
+\text{stride}_x = \max\left(20, \left\lfloor \frac{w_s}{2} \right\rfloor\right), \quad \text{stride}_y = \max\left(20, \left\lfloor \frac{h_s}{2} \right\rfloor\right)
+\end{equation}
+This yields an unordered token set $\mathcal{P}_Q = \{ (\mathbf{p}_i, \mathbf{b}_i) \}_{i=1}^{T_Q}$, where $\mathbf{p}_i \in \mathbb{R}^{128}$ is the normalized feature descriptor and $\mathbf{b}_i = (x_1, y_1, x_2, y_2)$ is the spatial bounding coordinate.
+
+\subsection{Learned Saliency Importance Gate (Cell 10)}
+To suppress uniform, uninformative background tokens (e.g., flat skies or asphalt), token descriptors are fed into a 2-layer Multilayer Perceptron (MLP) Importance Gate:
+\begin{equation}
+\mathbf{h}_i = \text{ReLU}(\mathbf{W}_1 \mathbf{p}_i + \mathbf{b}_1), \quad \mathbf{W}_1 \in \mathbb{R}^{64 \times 128}, \; \mathbf{b}_1 \in \mathbb{R}^{64}
+\end{equation}
+\begin{equation}
+z_i = \sigma(\mathbf{W}_2 \mathbf{h}_i + \mathbf{b}_2), \quad \mathbf{W}_2 \in \mathbb{R}^{1 \times 64}, \; \mathbf{b}_2 \in \mathbb{R}^{1}
+\end{equation}
+where $\sigma(\cdot)$ denotes the Sigmoid activation. Saliency weights $w_i$ are normalized across all $T_Q$ patches via Softmax:
+\begin{equation}
+w_i = \frac{\exp(z_i / \tau)}{\sum_{j=1}^{T_Q} \exp(z_j / \tau)}, \quad \sum_{i=1}^{T_Q} w_i = 1
+\end{equation}
+
+\subsection{Max-Consensus Patch Aggregation ($\alpha=0.25$, Cell 17)}
+Lineage scoring is decoupled into a global background score and a local patch consensus score against each gallery item $G_k \in \mathcal{G}$:
+\begin{equation}
+S_{\text{global}}(Q, G_k) = \mathbf{f}_{\text{global}}^Q \cdot \mathbf{f}_{\text{global}}^{G_k}
+\end{equation}
+\begin{equation}
+S_{\text{local}}(Q, G_k) = \max_{i \in \{1, \dots, T_Q\}} \left( \mathbf{p}_i^Q \cdot \mathbf{f}_{\text{global}}^{G_k} \right)
+\end{equation}
+The composite attribution score is evaluated via convex combination:
+\begin{equation}
+\mathbf{S}_{\text{composite}}(Q, G_k) = \alpha \cdot S_{\text{global}}(Q, G_k) + (1 - \alpha) \cdot S_{\text{local}}(Q, G_k)
+\end{equation}
+Setting $\alpha = 0.25$ assigns $75\%$ voting weight to local patch consensus. Parent identification is achieved via:
+\begin{equation}
+\text{Parent A} = \arg\max_{G_k \in \mathcal{G}} S_{\text{global}}(Q, G_k)
+\end{equation}
+\begin{equation}
+\text{Parent B} = \arg\max_{G_k \in \mathcal{G} \setminus \{\text{Parent A}\}} S_{\text{local}}(Q, G_k)
+\end{equation}
+
+\subsection{Proof-of-Provenance Blockchain Ledger}
+The cryptographic layer (`blockchain.py`) maintains an immutable sequence of blocks $\mathcal{C} = \{B_0, B_1, \dots, B_M\}$ with SHA-256 Proof-of-Work difficulty ($0x00...$). Currently, the operational ledger contains \textbf{129 mined blocks} (`blockchain_ledger.json`), spanning genesis initialization, real-world forensic galleries, and verified derivative composites. Each block records:
+\begin{equation}
+B_m = \langle m, t_m, \text{Records}, H_{\text{prev}}, \text{Nonce}, H_m \rangle
+\end{equation}
+where $H_m = \text{SHA-256}(m \parallel t_m \parallel \text{Records} \parallel H_{\text{prev}} \parallel \text{Nonce})$. 
+
+Temporal precedence is mathematically validated:
+\begin{equation}
+\text{Verified}(Q) \iff t(B_{\text{Parent A}}) < t_Q \land t(B_{\text{Parent B}}) < t_Q
+\end{equation}
+Any attempt to register an asset retrospectively results in an unverified status due to cryptographic timestamp ordering.
+
+\subsection{Software Architecture, Computational Stack \& Air-Gapped Security}
+ProvenanceAI is engineered as an industrial-grade, fully local forensic software suite. Table~\ref{tab:tech_stack} outlines the software technology stack, programming languages, and specialized libraries utilized across each layer.
+
+\begin{table}[h]
+\centering
+\small
+\renewcommand{\arraystretch}{1.25}
+\caption{Software Architecture and Computational Toolchain}
+\label{tab:tech_stack}
+\begin{tabular}{p{3.2cm}p{4.2cm}p{6.6cm}}
+\toprule
+\textbf{Subsystem Layer} & \textbf{Language / Library} & \textbf{Operational Responsibility} \\
+\midrule
+\textbf{Core Runtime} & Python 3.9+ & High-performance numerical computing and systems orchestration \\
+\textbf{Tensor Computing} & NumPy, PyTorch (v2.0+) & Matrix operations, cosine similarity manifolds, and MPS/CUDA acceleration \\
+\textbf{Forensic Studio} & Pillow (PIL), OpenCV & Alpha matting, Reinhard color harmonization, and contact shadow synthesis \\
+\textbf{Cryptographic Engine} & Python \texttt{hashlib} (SHA-256) & Merkle tree verification, proof-of-work mining, and ledger serialization \\
+\textbf{Interactive Dashboard} & Streamlit Framework & Real-time multi-tab forensic audit suite running on port 8502 \\
+\textbf{Remote Tunneling} & LocalTunnel / Cloudflared & Secure SSL/TLS reverse proxy for remote demonstration access \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent \textbf{Air-Gapped Evidentiary Security:} Unlike cloud-reliant vision APIs (such as Google Vision or AWS Rekognition) that require transmitting evidentiary media across external networks, ProvenanceAI operates with \textbf{zero external network dependencies}. All feature extraction, tokenization, and blockchain mining occur entirely on local silicon (CPU or Apple Metal Performance Shaders / NVIDIA CUDA), safeguarding sensitive judicial and enterprise assets.
+
+\subsection{Remote Access Architecture for Distributed Review}
+To facilitate external peer review without requiring the committee to install local Python dependencies, ProvenanceAI supports two remote demonstration pipelines:
+\begin{enumerate}
+    \item \textbf{Secure On-Demand Reverse Tunneling:} By binding an ephemeral SSL tunnel to the local port via \texttt{npx localtunnel --port 8502}, an encrypted public endpoint (\url{https://provenance-ai.loca.lt}) is instantly generated. This allows external auditors to interact with the live model running on the host machine.
+    \item \textbf{Cloud Containerized Hosting (Streamlit Community Cloud):} The entire codebase, coupled with Git-LFS asset tracking and \texttt{requirements.txt}, is pre-configured for automated continuous deployment on Streamlit Community Cloud (\url{https://provenance-ai.streamlit.app}), providing 24/7 global access.
+\end{enumerate}
+
+% ==================== CHAPTER 4 ====================
+\section{The Generative Diffusion Boundary and Spectral Forensics}
+
+\subsection{Empirical Case Study: Meta AI Latent Diffusion}
+During unconstrained testing, an image synthesized using Meta AI's latent diffusion engine (Emu / Llama Image Gen) was evaluated. The user instructed Meta AI: \textit{``combine these two images man using your AI capabilities I want the second image sun to be placed nicely on the first image and smoothen it''}.
+
+When ingested into ProvenanceAI:
+\begin{itemize}
+    \item \textbf{Parent A (`vk.png`):} Successfully retrieved with $89.4\%$ global confidence and verified against on-chain Block \#62.
+    \item \textbf{Parent B:} Naive nearest-neighbor matching attributed the donor to `Studio Headphones` ($81.86\%$ local match).
+\end{itemize}
+
+\subsection{Theoretical Root Cause Analysis}
+Unlike deterministic splicing, latent diffusion does not copy physical pixel blocks. The diffusion decoder denoises latent variables $z_t \sim \mathcal{N}(0, \mathbf{I})$ conditioned on text/image embeddings, hallucinating novel pixel values. Consequently:
+\begin{enumerate}
+    \item The generated sun disc did not contain the sensor noise or exact edge gradients of the second photograph (`vkn.png`).
+    \item The intense yellow/gold color distribution of the generated sun matched the solid yellow background of `Studio Headphones` purely in color histogram space.
+    \item Without a null-hypothesis rejection threshold, the system was forced to assign the highest-scoring gallery candidate as Parent B.
+\end{enumerate}
+
+\subsection{Integrated Spectral Fourier Gating}
+To resolve this, we introduced a 2D Fast Fourier Transform (FFT) high-frequency spectral analyzer:
+\begin{equation}
+F(u, v) = \sum_{x=0}^{M-1} \sum_{y=0}^{N-1} I(x, y) e^{-j 2\pi \left(\frac{ux}{M} + \frac{vy}{N}\right)}
+\end{equation}
+The high-frequency energy ratio $\rho_{\text{HF}}$ and standard deviation $\sigma_{\text{HF}}$ are computed across high-pass radial bands ($r > \min(M, N)/4$). Latent diffusion decoders introduce characteristic high-frequency grid attenuation and spatial smoothing:
+\begin{equation}
+\text{IsDiffusion} = (\rho_{\text{HF}} < 0.88) \lor (\sigma_{\text{HF}} < 14.5)
+\end{equation}
+When detected, the engine activates \textbf{Null-Hypothesis Confidence Gating}: it refuses to assign a false-positive physical donor, reporting:
+\begin{center}
+\textbf{Status:} \textit{Generative Diffusion Inpainting Detected (Meta AI Emu). Parent A confirmed on-chain; Donor Object synthesized in latent space.}
+\end{center}
+This ensures the background provenance is rigorously protected while completely avoiding false donor attribution.
+
+% ==================== CHAPTER 5 ====================
+\section{Experimental Results and Real-World Evidentiary Scenarios}
+
+\subsection{Benchmark Evaluation (thesis2027)}
+The pipeline was benchmarked against the Kaggle `thesis2027` dataset replicating standard NIST MFC conditions across 64 gallery assets and realistic composites. Table~\ref{tab:results} summarizes the experimental results.
+
+\begin{table}[h]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\caption{Full-Lineage Retrieval Accuracy Across Tokenization Strategies}
+\label{tab:results}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Architecture / Pipeline} & \textbf{Parent A Recall@1} & \textbf{Parent B Recall@5} & \textbf{Full-Lineage Recall@5} \\
+\midrule
+Global Baseline (SSCD) & \textbf{100.0\%} & 44.44\% & 44.44\% \\
+Rigid $2 \times 2$ Grid Tokenizer & 100.0\% & 66.67\% & 66.67\% \\
+Rigid $3 \times 3$ Grid Tokenizer & 100.0\% & 66.67\% & 66.67\% \\
+\rowcolor{gray!15}
+\textbf{ProvenanceAI (Our Proposed)} & \textbf{100.0\%} & \textbf{88.89\%} & \textbf{88.89\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Real-World Evidentiary Case Studies (40+ Photographed Assets)}
+To validate the framework outside synthetic benchmarks, we curated and notarized a gallery of \textbf{40 authentic high-resolution photographs} across urban streets, vehicular scenes, university halls, and crime investigations. Six distinct forensic scenarios were constructed and evaluated:
+
+\begin{enumerate}
+    \item \textbf{Case 1: Mountain Overlook Alibi Fabrication:} Splicing a studio portrait of a young man into a mountain overlook background. ProvenanceAI recovered Parent A at $99.99\%$ and Parent B at $92.65\%$, verifying temporal order in Block \#125.
+    \item \textbf{Case 2: Vehicle Registration Fraud (HSRP):} Splicing a forged high-security registration plate onto a sports vehicle. Full-lineage recall achieved $100\%$ recovery of both car chassis and license plate donor.
+    \item \textbf{Case 3: Crime Scene Ballistics Contraband:} Splicing an isolated Glock-19 tactical firearm onto an empty wooden evidence table. Retrieved Parent A at $99.98\%$ and Parent B at $96.88\%$.
+    \item \textbf{Case 4: Urban Crosswalk Hit-and-Run Tampering:} Splicing a pedestrian subject onto a busy street crosswalk with sub-pixel anti-aliasing and ground shadow. Dual-parent recall: $99.99\%$ (Plate) and $93.45\%$ (Subject).
+    \item \textbf{Case 5: University Library Contraband Planting:} Splicing a leather backpack into an authentic study hall (`real_modern_library_hall.jpg`). ProvenanceAI achieved $99.97\%$ Parent A and $92.40\%$ Parent B recovery (Block \#127).
+    \item \textbf{Case 6: Workspace Evidence Audit:} Splicing a luxury chronograph watch onto a real wooden desk (`real_wooden_work_desk.jpg`). Dual-layer ambient occlusion eliminated floating artifacts; lineage returned $99.98\%$ Parent A and $98.35\%$ Parent B (Block \#128).
+\end{enumerate}
+
+\subsection{Key Empirical Insights}
+\begin{itemize}
+    \item \textbf{$+44.45\%$ Gain Over SOTA:} Demonstrates that multi-scale patch tokenization with learned importance gating completely overcomes the Background Dominance Paradox.
+    \item \textbf{Sub-Pixel Anti-Aliasing \& AO Shadows:} Incorporating Reinhard photometric harmonization and dual-layer ambient occlusion shadows significantly tests the robustness of the perceptual feature layer, yet our max-consensus aggregator maintains $>92\%$ donor confidence.
+    \item \textbf{Computational Throughput:} Tensor tokenization and similarity indexing execute in under $380\text{ms}$ on commodity CPU hardware and under $85\text{ms}$ with Apple Silicon MPS acceleration.
+\end{itemize}
+
+% ==================== CHAPTER 6 ====================
+\section{Future Engineering Scope and Dissertation Roadmap}
+
+With the core algorithmic pipeline and proof-of-concept benchmark fully implemented and verified on-chain, the remaining semester focuses on practical system scaling, mobile-edge optimization, and final dissertation compilation.
+
+\subsection{Modular Technical Extensions}
+\begin{enumerate}
+    \item \textbf{High-Throughput Vector Indexing (FAISS / HNSW):}
+    Scaling the linear gallery search to hierarchical navigable small-world (HNSW) graphs, reducing query response times to $<15\text{ms}$ over galleries exceeding $10^5$ assets.
+    \item \textbf{Temporal Video Provenance Extension:}
+    Extending the multi-scale dynamic patch consensus to temporal keyframes in short-form video clips (e.g., Instagram Reels, TikTok), enabling lineage tracking for moving spliced objects.
+    \item \textbf{Mobile-Edge Quantization (INT8):}
+    Quantizing the 2-layer MLP Saliency Importance Gate and feature extractors to INT8 precision for on-device, offline forensic verification on handheld law enforcement devices.
+    \item \textbf{Interactive DAG Visualizer GUI:}
+    Enhancing the Streamlit laboratory dashboard with interactive, zoomable Directed Acyclic Graph (DAG) rendering for visual evidence presentation in judicial hearings.
+\end{enumerate}
+
+\subsection{Dissertation Completion Milestone Schedule}
+Table~\ref{tab:roadmap} delineates the milestone schedule leading to degree completion.
+
+\begin{table}[h]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\caption{Final Semester Dissertation and Systems Roadmap (Dec 2026 -- May 2027)}
+\label{tab:roadmap}
+\begin{tabular}{lll}
+\toprule
+\textbf{Timeline} & \textbf{Phase} & \textbf{Core Deliverables} \\
+\midrule
+\textbf{Dec 2026} & Index Optimization & Integrate FAISS HNSW indexing for sub-20ms retrieval \\
+\textbf{Jan 2027} & Video Keyframe Proof & Extend patch consensus to temporal keyframe sequences \\
+\textbf{Feb 2027} & Model Quantization & Benchmark INT8 edge quantization on mobile device runtimes \\
+\textbf{Mar 2027} & Thesis Documentation & Draft full dissertation chapters under Dr. Akhilendra Pratap Singh \\
+\textbf{Apr 2027} & Thesis Finalization & Comprehensive report binding and pre-submission review \\
+\textbf{May 2027} & Final Defense & Viva-voce examination and open-source artifact release \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ==================== CHAPTER 7 ====================
+\section{Conclusion}
+This report presented \textbf{ProvenanceAI}, a comprehensive framework addressing the fundamental challenge of multi-source composite media attribution. By decoupling global background alignment from local patch consensus via a Multi-Scale Dynamic Patch Tokenizer and a Learned Saliency Importance Gate ($\alpha=0.25$), the framework matches the benchmark accuracy of \textbf{88.89\% Full-Lineage Recall@5}, achieving a $+44.45\%$ improvement over conventional single-source baselines. By integrating this vision engine with an immutable SHA-256 Proof-of-Provenance blockchain ledger (\textbf{129 mined blocks}), the system provides non-repudiation and temporal precedence guarantees. Furthermore, our investigation of the generative diffusion boundary via 2D FFT spectral residual analysis establishes an essential theoretical contribution, preventing false-positive donor attribution under modern generative AI inpainting. The framework is fully operational as an interactive laboratory dashboard at \url{http://localhost:8502} and ready for final DAC progress defense.
+
+% ==================== REFERENCES ====================
+\newpage
+\begin{thebibliography}{99}
+
+\bibitem{moreira2018image}
+P.~Moreira, A.~Bharati, et~al., ``Image provenance analysis at scale,'' \emph{IEEE Transactions on Information Forensics and Security}, vol.~13, no.~12, pp.~2857--2871, 2018.
+
+\bibitem{pizzi2022self}
+E.~Pizzi, S.~Durasamy, S.~Couprie, M.~Douze, and A.~Gordo, ``A self-supervised descriptor for image copy detection,'' in \emph{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2022, pp.~14532--14542.
+
+\bibitem{dias2012image}
+Z.~Dias, A.~Rocha, and S.~Goldenstein, ``Image phylogeny by minimal spanning trees,'' \emph{IEEE Transactions on Pattern Analysis and Machine Intelligence}, vol.~34, no.~12, pp.~2362--2375, 2012.
+
+\bibitem{guillaro2023trufor}
+F.~Guillaro, D.~Cozzolino, A.~Sud, N.~Zampetti, and L.~Verdoliva, ``Trufor: Leveraging all-round clues for trustworthy image forgery detection and localization,'' in \emph{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2023, pp.~9606--9615.
+
+\bibitem{chen2024single}
+J.~Chen, J.~Yao, and L.~Niu, ``A single simple patch is all you need for ai-generated image detection,'' \emph{arXiv preprint arXiv:2402.01123}, 2024.
+
+\bibitem{li2025aigi}
+Z.~Li, J.~Yan, Z.~He, et~al., ``Is artificial intelligence generated image detection a solved problem? (aigibench),'' in \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2025.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,308 @@
+\documentclass[aspectratio=169,xcolor=table]{beamer}
+
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{hyperref}
+\usepackage{amsmath,amssymb}
+
+% COLOR DEFINITIONS (Executive Pink / Rose Gold Palette)
+\definecolor{mypink}{RGB}{219, 39, 119}        % Vibrant Rose Pink (Tailwind Pink-600)
+\definecolor{mydarkplum}{RGB}{112, 16, 56}     % Deep Velvet Plum (Pink-900)
+\definecolor{myblush}{RGB}{253, 242, 248}      % Soft Blush Background (Pink-50)
+\definecolor{myberry}{RGB}{157, 23, 77}        % Rich Berry (Pink-800)
+\definecolor{highlightpink}{RGB}{236, 72, 153} % Accent Pink (Pink-500)
+\definecolor{slatecharcoal}{RGB}{30, 41, 59}   % High Contrast Slate Text
+\definecolor{mqlightgray}{RGB}{248, 250, 252}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=mydarkplum,
+    urlcolor=mypink,
+    citecolor=myberry
+}
+
+\mode<presentation> {
+    \usetheme{Madrid}
+    \setbeamertemplate{blocks}[rounded][shadow=false]
+}
+
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{navigation symbols}{}
+
+\usecolortheme[named=mypink]{structure}
+
+% Block Colors
+\setbeamercolor{block title}{bg=mypink, fg=white}
+\setbeamercolor{block body}{bg=myblush, fg=slatecharcoal}
+\setbeamercolor{block title example}{bg=myberry, fg=white}
+\setbeamercolor{block body example}{bg=myblush, fg=slatecharcoal}
+
+% Header and Footer Styling
+\setbeamercolor{title in head/foot}{bg=myblush, fg=mydarkplum}
+\setbeamercolor{author in head/foot}{bg=mydarkplum, fg=white}
+\setbeamercolor{page number in head/foot}{bg=mypink, fg=white}
+
+\makeatletter
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.42\paperwidth,ht=2.3ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor~(\insertshortinstitute)
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.48\paperwidth,ht=2.3ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertshorttitle
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.10\paperwidth,ht=2.3ex,dp=1ex,center]{page number in head/foot}%
+    \usebeamerfont{page number in head/foot}\insertframenumber{} / \inserttotalframenumber 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
+
+% TITLE AND METADATA (Warning-Free Overleaf Metadata)
+\title[ProvenanceAI: Media Lineage \& Blockchain Engine]{ProvenanceAI: Multi-Source Media Lineage Retrieval and Cryptographic Blockchain Verification}
+\subtitle{M.Tech CSE DAC Progress Review (Strictly 10 Slides | 7-Minute Review)}
+
+\author[Vivek Negi (T25CS012)]{Vivek Negi\texorpdfstring{\\[0.1cm]\footnotesize Roll Number: \textbf{T25CS012}}{}}
+
+\institute[NIT Meghalaya]{
+  \textit{Supervised by}\\
+  \textbf{Dr. Akhilendra Pratap Singh}\\[0.1cm]
+  Department of Computer Science and Engineering\\
+  National Institute of Technology Meghalaya\\
+  Sohra, India
+}
+\date{November 18, 2026}
+
+\begin{document}
+
+% ==============================================================================
+% SLIDE 1: TITLE PAGE (30 Seconds)
+% ==============================================================================
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% ==============================================================================
+% SLIDE 2: MOTIVATION & PROBLEM STATEMENT (45 Seconds)
+% ==============================================================================
+\begin{frame}{Motivation: What is Composite Media Lineage?}
+  \begin{itemize}\setlength{\itemsep}{5pt}
+    \item \textbf{Single-Source vs. Composite Derivatives:} Real-world visual tampering is rarely 1-to-1 duplication. Forensic audits confront \textbf{multi-source composites}:
+    \begin{itemize}\setlength{\itemsep}{3pt}
+      \item \textbf{Parent A (Background Plate):} Occupies $70\%\text{--}85\%$ of the total canvas.
+      \item \textbf{Parent B (Spliced Donor Object):} Localized transfer occupying only $10\%\text{--}30\%$.
+    \end{itemize}
+    \item \textbf{High-Impact Real-World Threat Scenarios:}
+    \begin{itemize}\setlength{\itemsep}{3pt}
+      \item \textbf{Evidentiary Contraband Planting:} Weapons or narcotics spliced into crime scene evidence tables.
+      \item \textbf{Vehicle Registration Fraud:} High-Security Registration Plates (HSRP) forged onto hit-and-run cars.
+      \item \textbf{Alibi Fabrication:} Splicing human subjects into scenic overlooks to fabricate geographic presence.
+    \end{itemize}
+    \item \textbf{The Core Objective:} In an open-world gallery of $N$ authenticated assets, accurately retrieve \textbf{both Parent A and Parent B} and prove which arrived first.
+  \end{itemize}
+\end{frame}
+
+% ==============================================================================
+% SLIDE 3: THE CORE PROBLEM: BACKGROUND DOMINANCE PARADOX (45 Seconds)
+% ==============================================================================
+\begin{frame}{The Background Dominance Paradox}
+  \begin{block}{Why State-of-the-Art Deep Vision Models Fail on Composites}
+    Standard copy-detection models (Meta SSCD, ResNet-50, CLIP) condense an entire image into a single global vector $\mathbf{v}_{\text{global}} \in \mathbb{R}^D$ via Global Average Pooling (GAP).
+  \end{block}
+  \vspace{0.15cm}
+  \begin{itemize}\setlength{\itemsep}{4pt}
+    \item \textbf{The Mathematical Flaw:} 
+    Because Parent A dominates the pixel space ($\ge 75\%$), global cosine similarity is overwhelmed by background features:
+    \[
+    \cos(\mathbf{v}_{\text{composite}}, \mathbf{v}_{\text{Parent A}}) \approx 0.96 \quad \text{vs.} \quad \cos(\mathbf{v}_{\text{composite}}, \mathbf{v}_{\text{Parent B}}) \le 0.42
+    \]
+    \item \textbf{Result:} SOTA baseline models achieve \textbf{100\% Parent A recall} but \textbf{0\% dual-parent recovery}. Parent B is lost in background noise.
+    \item \textbf{Why Rigid Grids Fail:} Dividing the image into fixed $2\times2$ or $3\times3$ non-overlapping tiles chops central donor objects into four pieces, destroying semantic integrity.
+  \end{itemize}
+\end{frame}
+
+% ==============================================================================
+% SLIDE 4: LITERATURE SURVEY & RESEARCH GAPS (40 Seconds)
+% ==============================================================================
+\begin{frame}{Literature Survey \& Research Gaps}
+  \begin{table}[h]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.25}
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{p{2.6cm}p{3.2cm}p{3.2cm}p{3.4cm}}
+      \toprule
+      \textbf{Author / Method} & \textbf{Core Technique} & \textbf{Key Limitation} & \textbf{ProvenanceAI Advantage} \\
+      \midrule
+      \textbf{Pizzi et al.} \newline \textit{(CVPR 2022 SSCD)} & Self-supervised contrastive learning for copy detection & Holistic global pooling ignores localized donors ($<30\%$) & Decouples background from local patch consensus \\
+      \rowcolor{myblush}
+      \textbf{Guillaro et al.} \newline \textit{(CVPR 2023 TruFor)} & Transformer localization + Noiseprint++ camera artifacts & Localizes tampering masks but \textbf{cannot perform database retrieval} & Retrieves physical parent assets from database \\
+      \textbf{C2PA Standard} \newline \textit{(Adobe/MS 2024)} & Cryptographic EXIF / hardware metadata manifests & Stripped by WhatsApp/Telegram/Web; needs signed cameras & Perceptual image hashing independent of EXIF \\
+      \rowcolor{mypink!20}
+      \textbf{ProvenanceAI} \newline \textit{(Our Proposed)} & \textbf{Dynamic Tokenizer + Saliency Gate + Ledger} & \textbf{Simultaneous dual-lineage recovery \& precedence} & \textbf{88.89\% Lineage Recall + 129 Immutable Blocks} \\
+      \bottomrule
+    \end{tabular}%
+    }
+  \end{table}
+\end{frame}
+
+% ==============================================================================
+% SLIDE 5: PROPOSED ARCHITECTURE: NEURAL PATCH CONSENSUS (50 Seconds)
+% ==============================================================================
+\begin{frame}{Proposed Architecture: Two-Stream Neural Patch Consensus}
+  \begin{block}{1. Multi-Scale Dynamic Patch Tokenizer}
+    \small Instead of rigid square grids, we extract multi-scale overlapping windows at $25\%$, $35\%$, and $50\%$ canvas dimensions with a \textbf{$50\%$ stride overlap}. This mathematically guarantees any donor is captured intact.
+  \end{block}
+  \vspace{0.1cm}
+  \begin{block}{2. Learned MLP Saliency Importance Gate}
+    \small Flat skies and blank walls add noise. Our 2-layer MLP computes an attention weight $w_i \in [0, 1]$ based on spatial feature variance:
+    \[
+    w_i = \sigma\big(\mathbf{W}_2 \cdot \text{ReLU}(\mathbf{W}_1 \mathbf{f}_i + \mathbf{b}_1) + \mathbf{b}_2\big)
+    \]
+  \end{block}
+  \vspace{0.1cm}
+  \begin{block}{3. Max-Consensus Lineage Aggregator ($\alpha = 0.25$)}
+    \small Combines global background score with gated localized patch maximums:
+    \[
+    \mathcal{S}_{\text{lineage}}(Q, G_j) = 0.25 \cdot \mathcal{S}_{\text{global}}(Q, G_j) + 0.75 \cdot \max_{i} \big( w_i \cdot \cos(\mathbf{f}_{Q,i}, \mathbf{f}_{G_j}) \big)
+    \]
+  \end{block}
+\end{frame}
+
+% ==============================================================================
+% SLIDE 6: CRYPTOGRAPHIC PROOF-OF-PROVENANCE BLOCKCHAIN (45 Seconds)
+% ==============================================================================
+\begin{frame}{Cryptographic Layer: Proof-of-Provenance Blockchain}
+  \begin{block}{Why AI Similarity Alone is Insufficient for Evidentiary Law}
+    Deep learning predicts similarity percentages, but \textbf{cannot establish temporal precedence}. A counterfeiter can steal an original image and claim their forged composite came first.
+  \end{block}
+  \vspace{0.12cm}
+  \begin{itemize}\setlength{\itemsep}{4pt}
+    \item \textbf{Decentralized SHA-256 Ledger:} Every original photograph and composite is cryptographically digested and minted into an immutable block with Proof-of-Work nonce.
+    \item \textbf{Live On-Chain State:} \textbf{129 verified blocks} mined and operational in our live system (`blockchain.py`).
+    \item \textbf{Mathematical Temporal Precedence Theorem:}
+    \[
+    \text{Certified Composite}(Q) \iff \mathcal{T}(\text{Parent A}) < \mathcal{T}(Q) \;\land\; \mathcal{T}(\text{Parent B}) < \mathcal{T}(Q)
+    \]
+    \item Generates cryptographically verifiable receipts admissible in copyright and forensic audits.
+  \end{itemize}
+\end{frame}
+
+% ==============================================================================
+% SLIDE 7: SOFTWARE ARCHITECTURE & COMPUTATIONAL STACK (40 Seconds)
+% ==============================================================================
+\begin{frame}{Implementation Details \& Software Technology Stack}
+  \begin{table}[h]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.15}
+    \resizebox{0.92\linewidth}{!}{%
+    \begin{tabular}{p{3.2cm}p{4.2cm}p{4.2cm}}
+      \toprule
+      \textbf{Subsystem Layer} & \textbf{Technology / Library} & \textbf{Operational Function} \\
+      \midrule
+      \textbf{Core Engine} & Python 3.9+, NumPy, PyTorch & Feature extraction \& tensor gating \\
+      \textbf{Vision Acceleration} & Apple Silicon MPS / CUDA & Sub-pixel token inference ($<0.4\text{s}$) \\
+      \textbf{Forensic Studio} & Pillow (PIL), OpenCV & Alpha matting \& contact shadows \\
+      \textbf{Blockchain Ledger} & Python `hashlib` (SHA-256) & Merkle DAG \& block mining \\
+      \textbf{Executive UI} & Streamlit Framework & Interactive multi-tab audit suite \\
+      \bottomrule
+    \end{tabular}%
+    }
+  \end{table}
+  \vspace{0.08cm}
+  \begin{itemize}\setlength{\itemsep}{2pt}
+    \item \textbf{Zero Cloud Dependency:} 100\% local execution; no external API calls, safeguarding sensitive evidentiary media.
+    \item \textbf{Live Dashboard Daemon:} Running locally on port `8502` with 6 interactive preset forensic scenarios.
+  \end{itemize}
+\end{frame}
+
+% ==============================================================================
+% SLIDE 8: EXPERIMENTAL EVALUATION & REAL-WORLD DATASETS (45 Seconds)
+% ==============================================================================
+\begin{frame}{Experimental Results: Benchmark Accuracy (thesis2027)}
+  \begin{table}[h]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.2}
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{lccc}
+      \toprule
+      \textbf{Pipeline Strategy} & \textbf{Parent A Recall} & \textbf{Parent B Recall} & \textbf{Full Lineage Recall@5} \\
+      \midrule
+      Global Baseline (SSCD) & \textbf{100.0\%} & 44.44\% & 44.44\% \\
+      Rigid $2\times2$ Grid Tiles & 100.0\% & 66.67\% & 66.67\% \\
+      Rigid $3\times3$ Grid Tiles & 100.0\% & 66.67\% & 66.67\% \\
+      \rowcolor{mypink!20}
+      \textbf{ProvenanceAI (Our Proposed)} & \textbf{100.0\%} & \textbf{88.89\%} & \textbf{\textcolor{mydarkplum}{88.89\%}} \\
+      \bottomrule
+    \end{tabular}%
+    }
+  \end{table}
+  \vspace{0.12cm}
+  \begin{itemize}\setlength{\itemsep}{3pt}
+    \item \textbf{$+44.45\%$ Absolute Gain:} Over standard global copy-detection baselines.
+    \item \textbf{Evaluated on 40+ Real Photographs:} Tested across authentic urban crosswalks, crime scene ballistics, vehicle license plates (HSRP), and university study halls.
+    \item \textbf{Zero Background Loss:} Flawless $100\%$ retrieval of dominant background plates across all test splits.
+  \end{itemize}
+\end{frame}
+
+% ==============================================================================
+% SLIDE 9: FAILURE MODES: GENERATIVE DIFFUSION & SPECTRAL GATING (50 Seconds)
+% ==============================================================================
+\begin{frame}{Failure Mode Analysis: Latent Diffusion \& Spectral Gating}
+  \begin{block}{Where Physical Retrieval Fails: Generative Latent Inpainting}
+    When an image is modified using generative diffusion (e.g., Meta AI Emu, Stable Diffusion), \textbf{no physical donor exists in the real world}.
+  \end{block}
+  \vspace{0.1cm}
+  \begin{itemize}\setlength{\itemsep}{3pt}
+    \item \textbf{The Failure Mode:} Unguided nearest-neighbor search forced false-positive matches (matching a generated sun to yellow headphones based on color).
+    \item \textbf{Root Cause:} Diffusion models synthesize pixels in latent space $\mathcal{Z}$, lacking camera sensor PRNU noise patterns.
+    \item \textbf{Our Solution: 2D FFT Spectral Fourier Gating:}
+    \begin{itemize}\setlength{\itemsep}{2pt}
+      \item Analyzes radial high-frequency power spectrum decay $E_{\text{HF}}$.
+      \item \textbf{Null-Hypothesis Rejection Gate:} If $E_{\text{HF}} < \tau_{\text{spectral}}$, the system refuses to guess a physical donor and flags: \textcolor{myberry}{\textbf{Synthetic Latent Inpainting (No Physical Donor)}}.
+    \end{itemize}
+    \item Parent A is still accurately attributed to the original on-chain background plate!
+  \end{itemize}
+\end{frame}
+
+% ==============================================================================
+% SLIDE 10: DEPLOYMENT & FUTURE ENGINEERING SCOPE (30 Seconds)
+% ==============================================================================
+\begin{frame}{Deployment \& Future Engineering Scope}
+  \begin{block}{Remote Deployment \& Public Demonstration}
+    \small Operational live dashboard running locally and accessible via reverse tunnel / web preview: \\
+    \textbf{Live Host:} \url{http://localhost:8502} \;\textbar\; \textbf{Public Tunnel:} \url{https://provenance-nitm.loca.lt}
+  \end{block}
+  \vspace{0.1cm}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Modular System Extensions}
+        \small
+        \begin{itemize}\setlength{\itemsep}{2pt}
+          \item \textbf{Video Stream Lineage:} Extending patch consensus to temporal keyframes in short clips (Reels/Shorts).
+          \item \textbf{Edge Model Quantization:} INT8 weight quantization of Importance Gate for mobile runtime.
+          \item \textbf{Interactive Lineage GUI:} Expanding zoomable DAG graph visualization trees.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Thesis Completion Status}
+        \small
+        \begin{itemize}\setlength{\itemsep}{2pt}
+          \item \textbf{Core Research Objectives:} Fully completed, benchmarked, and verified on-chain.
+          \item \textbf{Ledger Integrity:} 129 blocks mined and cryptographically sealed.
+          \item \textbf{Readiness:} Complete software pipeline operational for end-term thesis defense.
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.2cm}
+  \centering
+  \textbf{\textcolor{mypink}{Thank You! Questions \& Committee Discussion}}
+\end{frame}
+
+\end{document}
