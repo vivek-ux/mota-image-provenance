@@ -43,5 +43,50 @@
     "previous_hash": "00a08e925ec8453c3b0fae1b73c47c6d91d2f62be471ff57edb4485807a100d1",
     "nonce": 87,
     "block_hash": "00d6293b0fa3128786b27c0e9fcdc6346b922c75b56dcdebca72c25e4aac09d5"
+  },
+  {
+    "index": 3,
+    "timestamp": 1795599903.708926,
+    "datetime_str": "2026-11-25 09:45:03 UTC",
+    "composite_hash": "2dbb2eb31bde15dadab022c20777bf83f97299a0a4e6cb49ef335079e057bfcc",
+    "parent_a_hash": "ffd750078dc7b24ee8764ab7bcf4ecda9cc0171cb65ec031204f2627e3561f71",
+    "parent_a_name": "car_mountain_overlook.jpg",
+    "parent_b_hash": "156084f481d9bb869e4170d8891e14f6be2ceda9b311e57596da2e9353cdb22f",
+    "parent_b_name": "real_classic_sports_car.jpg",
+    "attribution_confidence": 0.5847577452659607,
+    "importance_weight": 0.06586258858442307,
+    "previous_hash": "00d6293b0fa3128786b27c0e9fcdc6346b922c75b56dcdebca72c25e4aac09d5",
+    "nonce": 161,
+    "block_hash": "002222e850fa7f16322f872c17734f84c04ff1f085867e2e480cb54ed67ed675"
+  },
+  {
+    "index": 4,
+    "timestamp": 1795600244.455953,
+    "datetime_str": "2026-11-25 09:50:44 UTC",
+    "composite_hash": "2dbb2eb31bde15dadab022c20777bf83f97299a0a4e6cb49ef335079e057bfcc",
+    "parent_a_hash": "ffd750078dc7b24ee8764ab7bcf4ecda9cc0171cb65ec031204f2627e3561f71",
+    "parent_a_name": "car_mountain_overlook.jpg",
+    "parent_b_hash": "156084f481d9bb869e4170d8891e14f6be2ceda9b311e57596da2e9353cdb22f",
+    "parent_b_name": "real_classic_sports_car.jpg",
+    "attribution_confidence": 0.5730923116207123,
+    "importance_weight": 0.10847242176532745,
+    "previous_hash": "002222e850fa7f16322f872c17734f84c04ff1f085867e2e480cb54ed67ed675",
+    "nonce": 105,
+    "block_hash": "003aa161083d08c88cc853353ef50dcd9ea3ae84ba3dccf99003ba8e31f1ea00"
+  },
+  {
+    "index": 5,
+    "timestamp": 1795600842.837974,
+    "datetime_str": "2026-11-25 10:00:42 UTC",
+    "composite_hash": "517e256b6a44ef99b957b3bea79c43eb000dce5d47870339ce7c434df87f0096",
+    "parent_a_hash": "4fab5270cbbb2ffe2134ed7e2c3abb3552520fef933ec88f44cbb87dc15f724a",
+    "parent_a_name": "autumn_woodland_path.jpg",
+    "parent_b_hash": "9ef4420f03763e5ba724bf5930b560e0a051d28da004f8e9b854a0652a999b40",
+    "parent_b_name": "african_male_lion.jpg",
+    "attribution_confidence": 0.49074481427669525,
+    "importance_weight": 0.09297947585582733,
+    "previous_hash": "003aa161083d08c88cc853353ef50dcd9ea3ae84ba3dccf99003ba8e31f1ea00",
+    "nonce": 518,
+    "block_hash": "00b4ed110209526bb45d6406e1c5d5f7e19a22bbe11140e3dc4f8b9a972f2acd"
   }
 ]

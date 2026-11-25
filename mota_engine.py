@@ -6,8 +6,9 @@ Target: IEEE Transactions on Information Forensics and Security (IEEE TIFS)
 
 Exact PyTorch implementation replicating:
 - Parameterized Stride Equation with beta = 0.5 (Scale 1: 1, Scale 2: 9, Scale 3: 25 -> 35 Tokens)
-- 2-Layer Importance Gate MLP (512 -> 128 -> 1) with LayerNorm, ReLU, and Sigmoid/Softmax
-- Host Peeling & Donor Attribution Pipeline
+- Official Meta SSCD TorchScript feature extractor (512-d L2 normalized)
+- 2-Layer Importance Gate MLP (512 -> 128 -> 1) with LayerNorm, ReLU, and Sigmoid
+- Host Peeling & Donor Attribution Pipeline (Max-Sim Token Alignment)
 - SHA-256 Cryptographic Provenance Ledger
 """
 
@@ -77,7 +78,7 @@ class DynamicMultiScaleTokenizer:
                 meta = PatchMetadata(
                     patch_id=patch_counter,
                     scale_idx=1,
-                    scale_label="Scale 1 (Global)",
+                    scale_label="Scale 1 (Global Context)",
                     grid_div=(1, 1),
                     box=(0, 0, w, h),
                     patch_size=(w, h),
@@ -141,7 +142,6 @@ class ImportanceGate(nn.Module):
         self.dropout = nn.Dropout(0.1)
         self.fc2 = nn.Linear(hidden_dim, 1)
 
-        # Initialize with meaningful weights tuned to high-frequency saliency
         self._init_weights()
 
     def _init_weights(self):
@@ -206,46 +206,68 @@ class ImportanceGate(nn.Module):
 
 
 # ==============================================================================
-# 3. FEATURE EXTRACTOR (Meta SSCD / ResNet50 Fallback)
+# 3. FEATURE EXTRACTOR (Meta SSCD Official / ResNet50 Fallback)
 # ==============================================================================
 class FeatureExtractor:
     """
     Generates 512-dimensional L2-normalized feature vectors.
-    Uses official Meta SSCD TorchScript if available, otherwise high-precision
-    pre-trained ResNet50 backbone.
+    Uses official Meta SSCD TorchScript if available, otherwise ResNet50.
     """
     def __init__(self, weights_path: Optional[str] = None):
         self.device = DEVICE
         self.model = None
         self.is_sscd = False
 
-        self.transform = transforms.Compose([
-            transforms.Resize((224, 224)),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                 std=[0.229, 0.224, 0.225])
-        ])
+        # Check default paths for sscd_disc_mixup.torchscript.pt
+        if weights_path is None:
+            script_dir = os.path.dirname(__file__)
+            cand1 = os.path.join(script_dir, "sscd_disc_mixup.torchscript.pt")
+            cand2 = "sscd_disc_mixup.torchscript.pt"
+            if os.path.exists(cand1):
+                weights_path = cand1
+            elif os.path.exists(cand2):
+                weights_path = cand2
+            else:
+                # Auto-download official Meta SSCD if missing
+                try:
+                    import urllib.request
+                    target_dest = cand1
+                    url = "https://dl.fbaipublicfiles.com/sscd-copy-detection/sscd_disc_mixup.torchscript.pt"
+                    print(f"[MOTA Engine] Downloading official Meta SSCD from {url}...")
+                    urllib.request.urlretrieve(url, target_dest)
+                    weights_path = target_dest
+                except Exception as dl_err:
+                    print(f"[MOTA Engine] Auto-download failed: {dl_err}")
 
-        # Attempt to load official Meta SSCD
         if weights_path and os.path.exists(weights_path):
             try:
                 self.model = torch.jit.load(weights_path, map_location=self.device)
                 self.model.eval()
                 self.is_sscd = True
-                print(f"[MOTA Engine] Successfully loaded official Meta SSCD from {weights_path}")
+                self.transform = transforms.Compose([
+                    transforms.Resize((288, 288)),
+                    transforms.ToTensor(),
+                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                         std=[0.229, 0.224, 0.225])
+                ])
+                print(f"[MOTA Engine] Active: Official Meta SSCD ({weights_path}) on {self.device}")
             except Exception as e:
                 print(f"[MOTA Engine] Failed loading SSCD: {e}, falling back to ResNet50")
 
         if self.model is None:
-            # High-fidelity ResNet50 pre-trained backbone
+            self.transform = transforms.Compose([
+                transforms.Resize((224, 224)),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                     std=[0.229, 0.224, 0.225])
+            ])
             resnet = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
-            # Remove final classifier to get 2048-d, then project to 512-d
             modules = list(resnet.children())[:-1]
             self.backbone = nn.Sequential(*modules).to(self.device)
             self.projector = nn.Linear(2048, 512).to(self.device)
             self.backbone.eval()
             self.projector.eval()
-            print("[MOTA Engine] Running ResNet50 Feature Extractor (512-d L2 Normalized)")
+            print("[MOTA Engine] Active: ResNet50 Fallback (512-d L2 Normalized)")
 
     def extract(self, pil_imgs: List[Image.Image]) -> torch.Tensor:
         """
@@ -257,9 +279,8 @@ class FeatureExtractor:
             if self.is_sscd:
                 feats = self.model(tensors)
             else:
-                raw_feats = self.backbone(tensors).squeeze(-1).squeeze(-1) # [N, 2048]
-                feats = self.projector(raw_feats)                          # [N, 512]
-            # L2 Normalization (Cosine metric)
+                raw_feats = self.backbone(tensors).squeeze(-1).squeeze(-1)
+                feats = self.projector(raw_feats)
             feats = F.normalize(feats, p=2, dim=-1)
         return feats
 
@@ -332,7 +353,6 @@ class CryptographicLineageLedger:
         now = time.time()
         now_str = time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime(now))
 
-        # Compute SHA-256 of composite
         comp_bytes = composite_img.tobytes()
         comp_hash = hashlib.sha256(comp_bytes).hexdigest()
 
@@ -340,7 +360,6 @@ class CryptographicLineageLedger:
         while True:
             content = f"{prev_block.index + 1}{now}{comp_hash}{parent_a_hash}{parent_b_hash}{prev_block.block_hash}{nonce}"
             b_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
-            # Simple proof of work (starts with '00')
             if b_hash.startswith("00"):
                 break
             nonce += 1
@@ -366,7 +385,7 @@ class CryptographicLineageLedger:
 
 
 # ==============================================================================
-# 5. MOTA MASTER PIPELINE
+# 5. MOTA MASTER PIPELINE (With Fast Cache)
 # ==============================================================================
 class MOTAPipeline:
     def __init__(self, gallery_dir: str):
@@ -383,43 +402,63 @@ class MOTAPipeline:
     def _build_gallery_index(self):
         if not os.path.exists(self.gallery_dir):
             return
+
+        cache_file = os.path.join(self.gallery_dir, "sscd_gallery_embs.pt")
+        meta_cache = os.path.join(self.gallery_dir, "gallery_meta.json")
+
+        valid_exts = {".jpg", ".jpeg", ".png"}
+        filenames = sorted([fn for fn in os.listdir(self.gallery_dir) if os.path.splitext(fn)[1].lower() in valid_exts])
+
+        # Check if cache is valid
+        if os.path.exists(cache_file) and os.path.exists(meta_cache):
+            try:
+                with open(meta_cache, "r") as f:
+                    records = json.load(f)
+                if len(records) == len(filenames):
+                    self.gallery_records = records
+                    self.gallery_embs = torch.load(cache_file, map_location=self.extractor.device)
+                    print(f"[MOTA Pipeline] Loaded {len(records)} pre-computed SSCD embeddings from cache.")
+                    return
+            except Exception as e:
+                print(f"[MOTA Pipeline] Cache load failed ({e}), re-indexing gallery...")
+
+        # Re-index gallery
         imgs = []
         records = []
-        valid_exts = {".jpg", ".jpeg", ".png"}
-
-        for fn in sorted(os.listdir(self.gallery_dir)):
-            ext = os.path.splitext(fn)[1].lower()
-            if ext in valid_exts:
-                fpath = os.path.join(self.gallery_dir, fn)
-                try:
-                    p_img = Image.open(fpath).convert("RGB")
-                    imgs.append(p_img)
-                    # Compute sha256
-                    with open(fpath, "rb") as f:
-                        file_hash = hashlib.sha256(f.read()).hexdigest()
-                    records.append({
-                        "name": fn,
-                        "path": fpath,
-                        "hash": file_hash,
-                        "size": p_img.size
-                    })
-                except Exception:
-                    pass
+        for fn in filenames:
+            fpath = os.path.join(self.gallery_dir, fn)
+            try:
+                p_img = Image.open(fpath).convert("RGB")
+                imgs.append(p_img)
+                with open(fpath, "rb") as f:
+                    file_hash = hashlib.sha256(f.read()).hexdigest()
+                records.append({
+                    "name": fn,
+                    "path": fpath,
+                    "hash": file_hash,
+                    "size": p_img.size
+                })
+            except Exception:
+                pass
 
         if imgs:
             self.gallery_records = records
             self.gallery_embs = self.extractor.extract(imgs)
-            print(f"[MOTA Pipeline] Indexed {len(records)} gallery images into descriptor bank.")
+            try:
+                torch.save(self.gallery_embs, cache_file)
+                with open(meta_cache, "w") as f:
+                    json.dump(records, f)
+                print(f"[MOTA Pipeline] Cached {len(records)} gallery embeddings.")
+            except Exception:
+                pass
 
     def run_attribution(self, composite_img: Image.Image, top_k=5) -> Dict:
         """
-        Executes dual-channel lineage attribution with host peeling.
+        Executes dual-channel lineage attribution with host peeling and Max-Sim matching.
         """
         crops, metadata = self.tokenizer.tokenize(composite_img)
-        # Extract features for all 35 patches
         patch_embs = self.extractor.extract(crops)  # [35, 512]
 
-        # Token 0 is Scale 1 (Global image descriptor)
         global_emb = patch_embs[0:1]               # [1, 512]
         local_embs = patch_embs                     # [35, 512]
 
@@ -435,26 +474,26 @@ class MOTAPipeline:
             weights = self.gate(local_embs)         # [35] normalized weights
         weights_np = weights.cpu().numpy()
 
-        # 3. Donor Attribution (Local Channel with Peeling)
+        # 3. Donor Attribution (Local Max-Sim Channel with Host Peeling)
         token_sims = torch.matmul(local_embs, self.gallery_embs.T) # [35, G]
-
-        # Weighted Max-Sim Aggregation
-        weighted_sims = token_sims * weights.unsqueeze(-1)          # [35, G]
-        donor_scores = weighted_sims.sum(dim=0)                     # [G]
-
+        
+        # Max-Sim across all 35 patches for each candidate gallery image
+        max_sims, best_patch_indices = token_sims.max(dim=0)      # [G]
+        
         # Peel off detected Host (Parent A)
-        peeled_donor_scores = donor_scores.clone()
+        peeled_donor_scores = max_sims.clone()
         peeled_donor_scores[top_host_indices[0]] = -1.0
 
         top_donor_scores, top_donor_indices = torch.topk(peeled_donor_scores, k=top_k)
         donor_match = self.gallery_records[top_donor_indices[0].item()]
         donor_score = float(top_donor_scores[0].item())
+        donor_matched_patch = int(best_patch_indices[top_donor_indices[0]].item())
 
-        # Identify which patch had the highest importance weight
+        # Identify highest saliency patch
         salient_patch_idx = int(np.argmax(weights_np))
         salient_meta = metadata[salient_patch_idx]
 
-        # Mint cryptographic lineage ledger block
+        # Mint cryptographic block
         block = self.ledger.mint_attribution_block(
             composite_img=composite_img,
             parent_a_name=host_match["name"],
@@ -471,6 +510,8 @@ class MOTAPipeline:
             "weights": weights_np,
             "salient_patch_idx": salient_patch_idx,
             "salient_patch_meta": salient_meta,
+            "donor_matched_patch_idx": donor_matched_patch,
+            "donor_matched_patch_meta": metadata[donor_matched_patch],
             "parent_a": {
                 "record": host_match,
                 "score": host_score,
