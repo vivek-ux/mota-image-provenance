@@ -16,6 +16,7 @@ import hashlib
 from PIL import Image, ImageDraw, ImageFilter, ImageOps
 import numpy as np
 import torch
+import cv2
 
 # Page configuration
 st.set_page_config(
@@ -161,6 +162,9 @@ st.markdown("""
 st.sidebar.markdown("### 🎛️ Attribution Controls")
 
 PRESET_SAMPLES = {
+    "🦁 Organic Feathered: Woodland Path + Lion": "feathered_smoothstep_lion.jpg",
+    "🏛️ CASIA v2.0: Garden + Food Street Sign (Benchmark)": "gallery/casia_0.png",
+    "🏢 CASIA v2.0: Building + Lawn Fence (Benchmark)": "gallery/casia_1.png",
     "🚗 Car + Spliced Man": "car_man_composite.jpg",
     "🔫 Crime Scene + Handgun": "crime_scene_handgun_composite.png",
     "🚶 Urban Crosswalk + Blonde Woman": "crosswalk_blonde_composite.png",
@@ -243,15 +247,25 @@ with tab_studio:
         st.image(pil_donor_orig, caption=f"Ground Truth Donor: {donor_choice}", use_container_width=True)
 
     st.markdown("---")
-    st.markdown("#### ✂️ Step 3: Configure Splicing Parameters")
+    st.markdown("#### ✂️ Step 3: Configure Splicing & Forensic Fusion Parameters")
 
     col_ctrl1, col_ctrl2, col_ctrl3 = st.columns(3)
     with col_ctrl1:
-        donor_scale_pct = st.slider("Donor Size (% of host width):", 15, 60, 35)
+        donor_scale_pct = st.slider("Donor Size (% of host width):", 15, 65, 38)
     with col_ctrl2:
-        pos_x_pct = st.slider("X Position on Canvas (%):", 5, 80, 30)
+        pos_x_pct = st.slider("X Position on Canvas (%):", 5, 80, 50)
     with col_ctrl3:
-        pos_y_pct = st.slider("Y Position on Canvas (%):", 5, 80, 40)
+        pos_y_pct = st.slider("Y Position on Canvas (%):", 5, 80, 60)
+
+    blend_mode = st.radio(
+        "Forensic Blending Mode:",
+        [
+            "🌿 Organic Smoothstep Feathering (Soft Radial Edge, No Stickers)",
+            "💧 Poisson Seamless Gradient Cloning (Solves Poisson PDE Δf=Δg)",
+            "✂️ Hard Rectangle Paste (Baseline Naive Comparison)"
+        ],
+        horizontal=True
+    )
 
     # Generate live composite
     canvas_w, canvas_h = 512, 512
@@ -261,18 +275,54 @@ with tab_studio:
     d_w = int(canvas_w * (donor_scale_pct / 100.0))
     donor_aspect = pil_donor_orig.height / float(pil_donor_orig.width)
     d_h = int(d_w * donor_aspect)
+    d_w = max(16, min(canvas_w - 4, d_w))
+    d_h = max(16, min(canvas_h - 4, d_h))
     donor_scaled = pil_donor_orig.resize((d_w, d_h), Image.Resampling.LANCZOS)
 
-    # Paste donor
-    paste_x = int(canvas_w * (pos_x_pct / 100.0))
-    paste_y = int(canvas_h * (pos_y_pct / 100.0))
-    paste_x = min(paste_x, canvas_w - d_w)
-    paste_y = min(paste_y, canvas_h - d_h)
+    # Paste coordinates (centered)
+    paste_x = int(canvas_w * (pos_x_pct / 100.0)) - d_w // 2
+    paste_y = int(canvas_h * (pos_y_pct / 100.0)) - d_h // 2
+    paste_x = max(0, min(canvas_w - d_w, paste_x))
+    paste_y = max(0, min(canvas_h - d_h, paste_y))
 
-    # Create mask for smooth blending
-    donor_mask = Image.new("L", (d_w, d_h), 255)
-    live_composite = comp_base.copy()
-    live_composite.paste(donor_scaled, (paste_x, paste_y), mask=donor_mask)
+    if "Organic Smoothstep" in blend_mode:
+        # Radial cosine smoothstep feathering: melts boundaries organically
+        Y, X = np.ogrid[:d_h, :d_w]
+        cy_m, cx_m = d_h / 2.0, d_w / 2.0
+        ry, rx = d_h / 2.0 * 0.85, d_w / 2.0 * 0.85
+        dist = np.sqrt(((X - cx_m) / max(rx, 1e-4))**2 + ((Y - cy_m) / max(ry, 1e-4))**2)
+        mask_arr = np.clip(1.0 - (dist - 1.0) / 0.15, 0.0, 1.0)
+        mask_arr = 0.5 * (1.0 + np.cos(np.pi * (1.0 - mask_arr)))
+        mask_3ch = np.repeat(np.clip(mask_arr, 0.0, 1.0)[:, :, np.newaxis], 3, axis=2).astype(np.float32)
+
+        base_np = np.array(comp_base).astype(np.float32)
+        donor_np = np.array(donor_scaled).astype(np.float32)
+        roi = base_np[paste_y:paste_y+d_h, paste_x:paste_x+d_w]
+        blended = donor_np * mask_3ch + roi * (1.0 - mask_3ch)
+        base_np[paste_y:paste_y+d_h, paste_x:paste_x+d_w] = blended
+        live_composite = Image.fromarray(np.clip(base_np, 0, 255).astype(np.uint8))
+
+    elif "Poisson Seamless" in blend_mode:
+        host_cv = cv2.cvtColor(np.array(comp_base), cv2.COLOR_RGB2BGR)
+        donor_cv = cv2.cvtColor(np.array(donor_scaled), cv2.COLOR_RGB2BGR)
+        
+        mask_cv = np.zeros((d_h, d_w), dtype=np.uint8)
+        cv2.ellipse(mask_cv, (d_w // 2, d_h // 2), (int(d_w * 0.45), int(d_h * 0.45)), 0, 0, 360, 255, -1)
+        mask_cv = cv2.GaussianBlur(mask_cv, (15, 15), 5)
+        
+        center_pt = (paste_x + d_w // 2, paste_y + d_h // 2)
+        center_pt = (max(d_w // 2 + 2, min(canvas_w - d_w // 2 - 2, center_pt[0])),
+                     max(d_h // 2 + 2, min(canvas_h - d_h // 2 - 2, center_pt[1])))
+        try:
+            cloned_cv = cv2.seamlessClone(donor_cv, host_cv, mask_cv, center_pt, cv2.NORMAL_CLONE)
+            live_composite = Image.fromarray(cv2.cvtColor(cloned_cv, cv2.COLOR_BGR2RGB))
+        except Exception:
+            live_composite = comp_base.copy()
+            live_composite.paste(donor_scaled, (paste_x, paste_y))
+    else:
+        live_composite = comp_base.copy()
+        donor_mask = Image.new("L", (d_w, d_h), 255)
+        live_composite.paste(donor_scaled, (paste_x, paste_y), mask=donor_mask)
 
     st.markdown("#### 🖼️ Newly Synthesized Composite Query")
     st.image(live_composite, caption=f"Synthesized Composite: {donor_choice} spliced into {host_choice} at ({paste_x}, {paste_y})", width=420)
