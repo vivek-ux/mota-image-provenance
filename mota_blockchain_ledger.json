@@ -28,5 +28,20 @@
     "previous_hash": "7f96b73a802bf70dd3aa8215342b58cc0513f66651f5c4a9b0245291960594c9",
     "nonce": 465,
     "block_hash": "00a08e925ec8453c3b0fae1b73c47c6d91d2f62be471ff57edb4485807a100d1"
+  },
+  {
+    "index": 2,
+    "timestamp": 1795599818.494273,
+    "datetime_str": "2026-11-25 09:43:38 UTC",
+    "composite_hash": "2dbb2eb31bde15dadab022c20777bf83f97299a0a4e6cb49ef335079e057bfcc",
+    "parent_a_hash": "ffd750078dc7b24ee8764ab7bcf4ecda9cc0171cb65ec031204f2627e3561f71",
+    "parent_a_name": "car_mountain_overlook.jpg",
+    "parent_b_hash": "156084f481d9bb869e4170d8891e14f6be2ceda9b311e57596da2e9353cdb22f",
+    "parent_b_name": "real_classic_sports_car.jpg",
+    "attribution_confidence": 0.5847577452659607,
+    "importance_weight": 0.06586258858442307,
+    "previous_hash": "00a08e925ec8453c3b0fae1b73c47c6d91d2f62be471ff57edb4485807a100d1",
+    "nonce": 87,
+    "block_hash": "00d6293b0fa3128786b27c0e9fcdc6346b922c75b56dcdebca72c25e4aac09d5"
   }
 ]

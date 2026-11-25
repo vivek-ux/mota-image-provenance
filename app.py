@@ -227,7 +227,7 @@ crops, metadata = tokenizer.tokenize(current_image)
 # TAB 1: MULTI-SCALE TOKENIZER & STRIDE
 # ==============================================================================
 with tab1:
-    st.markdown("### 🧩 The Parameterized Multi-Scale Sliding Window ($\beta = 0.5$)")
+    st.markdown(r"### 🧩 The Parameterized Multi-Scale Sliding Window ($\beta = 0.5$)")
     st.markdown("""
     Standard rigid grids cut images along fixed quadrant seams, bisecting small spliced donor elements. 
     MOTA extracts **35 multi-scale tokens** under **Theorem 1 (Bounding Box Containment)**:
