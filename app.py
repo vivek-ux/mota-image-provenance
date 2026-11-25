@@ -133,11 +133,8 @@ from mota_engine import MOTAPipeline, DynamicMultiScaleTokenizer, ImportanceGate
 GALLERY_DIR = os.path.join(os.path.dirname(__file__), "gallery")
 os.makedirs(GALLERY_DIR, exist_ok=True)
 
-@st.cache_resource
-def load_pipeline():
-    return MOTAPipeline(GALLERY_DIR)
-
-pipeline = load_pipeline()
+# Initialize MOTA Pipeline directly (loads in <0.2s from pre-computed cache)
+pipeline = MOTAPipeline(GALLERY_DIR)
 
 # ------------------------------------------------------------------------------
 # Academic Banner Header
