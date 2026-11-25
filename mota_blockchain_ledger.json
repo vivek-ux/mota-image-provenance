@@ -1,0 +1,32 @@
+[
+  {
+    "index": 0,
+    "timestamp": 1700000000.0,
+    "datetime_str": "2026-11-25 00:00:00 UTC",
+    "composite_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "parent_a_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "parent_a_name": "GENESIS_HOST",
+    "parent_b_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "parent_b_name": "GENESIS_DONOR",
+    "attribution_confidence": 1.0,
+    "importance_weight": 1.0,
+    "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 42,
+    "block_hash": "7f96b73a802bf70dd3aa8215342b58cc0513f66651f5c4a9b0245291960594c9"
+  },
+  {
+    "index": 1,
+    "timestamp": 1795596710.24783,
+    "datetime_str": "2026-11-25 08:51:50 UTC",
+    "composite_hash": "104bd6df6491ed6d8bf005de1a8eb8496fe352705b6f56b55594977fe6a77706",
+    "parent_a_hash": "5b06dc4ef0bbf16455258a3f0778d42339672d44687c6120c2c6b51e06453d5f",
+    "parent_a_name": "donor_license_plate_mh.png",
+    "parent_b_hash": "aa5fef592d54364e720bde43e073bf846d62b8538f92ddb5f8ab991013d4dc01",
+    "parent_b_name": "donor_license_plate_dl.png",
+    "attribution_confidence": 0.3574542701244354,
+    "importance_weight": 0.04761632904410362,
+    "previous_hash": "7f96b73a802bf70dd3aa8215342b58cc0513f66651f5c4a9b0245291960594c9",
+    "nonce": 465,
+    "block_hash": "00a08e925ec8453c3b0fae1b73c47c6d91d2f62be471ff57edb4485807a100d1"
+  }
+]

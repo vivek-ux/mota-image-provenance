@@ -4,3 +4,20 @@ __pycache__/
 .venv/
 env/
 venv/
+py_modules/
+*.zip
+*.pdf
+*.pptx
+
+# Legacy unrelated slides
+pictures/
+reference_latex/
+
+# Large raw camera files (>5MB)
+gallery/vivek_photo*.png
+gallery/vivek_pnegi.png
+gallery/vnn*.png
+gallery/vn.png
+gallery/sunset_in_dehradun.png
+gallery/sunset_in_shillong.png
+last_composite.png

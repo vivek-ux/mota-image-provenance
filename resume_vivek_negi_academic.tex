@@ -1,0 +1,141 @@
+%-------------------------
+% Vivek Negi - Academic Resume (Assistant Professor in CSE)
+% Tailored for University / Academic Faculty Roles (Amity, Parul, etc.)
+%-------------------------
+
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.6in}
+\addtolength{\textheight}{1.2in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-6pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-4pt}]
+
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-5pt}
+}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=0.15in]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-4pt}}
+
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    \textbf{\Huge \scshape Vivek Negi} \\ \vspace{2pt}
+    \small \textbf{Candidate for Assistant Professor — Computer Science \& Engineering} \\
+    \small Dehradun, Uttarakhand $|$ +91-8077481802 $|$ \href{mailto:viveknegi177@gmail.com}{\underline{viveknegi177@gmail.com}} $|$ 
+    \href{https://linkedin.com/in/vivek-negi-b46070222}{\underline{linkedin.com/in/vivek-negi}} $|$
+    \href{https://github.com/vivek-ux}{\underline{github.com/vivek-ux}}
+\end{center}
+
+%-----------ACADEMIC SUMMARY-----------
+\section{Academic \& Professional Summary}
+\small{
+Computer Science scholar pursuing \textbf{M.Tech in CSE at NIT Meghalaya} (Institute of National Importance) with \textbf{nearly 2 years of enterprise software engineering experience at HSBC Technology India}. Strong pedagogical and theoretical foundation in Core CS (Data Structures \& Algorithms, Database Management Systems, Operating Systems, Computer Networks) coupled with active research in Deep Learning and Computer Vision. Proven record of disciplined academic leadership, analytical problem-solving (\textbf{GATE Qualified, 270+ LeetCode problems}), and situational character (\textbf{Indian Air Force SSB Recommended}).
+}
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {National Institute of Technology Meghalaya}{Sohra, India}
+      {Master of Technology (M.Tech) in Computer Science and Engineering}{Expected 2027}
+      \resumeItemListStart
+        \resumeItem{\textit{Focus Areas}: Deep Learning, Computer Vision Provenance, Advanced Algorithms, Distributed Database Systems.}
+      \resumeItemListEnd
+    \resumeSubheading
+      {Graphic Era University}{Dehradun, India}
+      {Bachelor of Technology (B.Tech) in Computer Science and Engineering}{2023}
+  \resumeSubHeadingListEnd
+
+%-----------TEACHING & RESEARCH INTERESTS-----------
+\section{Teaching \& Research Competencies}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Core Teaching Areas}{: Data Structures \& Algorithms, Database Management Systems (SQL), Operating Systems, Computer Networks, Object-Oriented Programming (Java/C++), Software Engineering} \\
+     \textbf{Research Specializations}{: Computer Vision, Deep Learning, Image Provenance \& Media Lineage, Contrastive Learning, Distributed Ledgers} \\
+     \textbf{Programming \& Tools}{: Java 17, Python, C++, SQL, PyTorch, Google BigQuery, PostgreSQL, Docker, Git, Linux}
+    }}
+ \end{itemize}
+
+%-----------MASTER'S THESIS RESEARCH-----------
+\section{Master's Thesis Research}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Multi-Source Media Lineage Retrieval with Dynamic Alignment \& Gating}{NIT Meghalaya}
+      {Advisor: Dr. Akhilendra Pratap Singh, Dept. of Computer Science \& Engineering}{2025 -- 2027}
+      \resumeItemListStart
+        \resumeItem{Formulated an end-to-end visual provenance framework to track spliced composite media against 1,000+ gallery images on MS-COCO, presenting findings with high faculty commendation for commercialization.}
+        \resumeItem{Engineered a 3-tier Dynamic Slicing hierarchy (Global, Anchor, and Overlapping Slices) overcoming spatial fragmentation pitfalls of rigid grids, increasing Recall@5 from 53.3\% to 75.5\%.}
+        \resumeItem{Designed a 2-layer MLP Importance Gating network using Contrastive Margin Loss to suppress background distractors, boosting full lineage retrieval accuracy to \textbf{88.89\% Recall@5} (+37.8\% over baseline).}
+        \resumeItem{Developed batched GPU tensor extraction in PyTorch with L2-normalized 512-D descriptors, reducing gallery indexing latency from 28 minutes to under \textbf{45 seconds}.}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+%-----------INDUSTRY EXPERIENCE-----------
+\section{Industry Engineering Experience}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {HSBC Technology India}{Pune, Maharashtra}
+      {Software Engineer — Production Systems \& Reliability}{Aug 2023 -- Jun 2025}
+      \resumeItemListStart
+        \resumeItem{Engineered and monitored enterprise end-of-day (EOD) financial batch processing pipelines across multi-node GCP clusters, ensuring strict SLA adherence for downstream settlement ledgers.}
+        \resumeItem{Profiled and optimized complex SQL and Google BigQuery queries, eliminating indexing bottlenecks and reducing runtimes across multi-million row financial transaction datasets.}
+        \resumeItem{Diagnosed critical L2/L3 production incidents via centralized log telemetry; authored detailed Root-Cause Analysis (RCA) documents and guided junior associates through resolution workflows.}
+        \resumeItem{Automated pipeline recovery workflows and data ingestion jobs using GCP Cloud Scheduler, maintaining 99.9\% processing uptime.}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+%-----------HONORS & ACHIEVEMENTS-----------
+\section{Honors \& Key Achievements}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Graduate Aptitude Test in Engineering (GATE)}: Qualified in Computer Science \& Information Technology. \\
+     \textbf{Indian Air Force SSB Recommendation}: Recommended for Flying Officer position by Air Force Selection Board (\textbf{AFSB Varanasi}) for AFCAT 1, 2024 (top $\sim$1\% selection rate across 5-day psychological, situational, and leadership evaluations). \\
+     \textbf{Algorithmic Discipline}: Solved \textbf{270+ problems on LeetCode} spanning Data Structures, Dynamic Programming, and Concurrency.
+    }}
+ \end{itemize}
+
+\end{document}

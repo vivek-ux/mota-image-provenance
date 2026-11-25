@@ -1,0 +1,167 @@
+%-------------------------
+% Vivek Negi - Master Resume (1-Page ATS-Optimized)
+% Formatted for SDE-1 / Backend / Systems / Applied AI roles (12-20 LPA)
+%-------------------------
+
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.6in}
+\addtolength{\textheight}{1.2in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-6pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-4pt}]
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-5pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-5pt}
+}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=0.15in]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-4pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    \textbf{\Huge \scshape Vivek Negi} \\ \vspace{2pt}
+    \small Dehradun, Uttarakhand $|$ +91-8077481802 $|$ \href{mailto:viveknegi177@gmail.com}{\underline{viveknegi177@gmail.com}} $|$ 
+    \href{https://linkedin.com/in/vivek-negi-b46070222}{\underline{linkedin.com/in/vivek-negi}} $|$
+    \href{https://github.com/vivek-ux}{\underline{github.com/vivek-ux}}
+\end{center}
+
+%-----------PROFESSIONAL SUMMARY-----------
+\section{Professional Summary}
+\small{
+Software Engineer with nearly 2 years of enterprise systems engineering experience at \textbf{HSBC Technology India}, currently pursuing \textbf{M.Tech in CSE at NIT Meghalaya}. Strong hands-on expertise building concurrent, high-reliability Java 17 and Spring Boot microservices with Redis, PostgreSQL, and distributed transaction patterns, alongside research experience in GPU-accelerated deep learning pipelines. Solved \textbf{270+ LeetCode problems} with a proven track record of elite discipline and situational leadership (\textbf{Indian Air Force SSB Recommended}).
+}
+
+%-----------CORE SKILLS-----------
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: Java 17, Python, SQL, C++, Bash} \\
+     \textbf{Backend \& Distributed Systems}{: Spring Boot, Microservices, Spring Security, REST APIs, Redis Caching, Pessimistic Locking, Transactional Outbox Pattern, Event-Driven Architecture} \\
+     \textbf{Databases \& Cloud}{: PostgreSQL, Google Cloud BigQuery, Google Cloud Platform (GCP), Cloud Scheduler} \\
+     \textbf{AI / Deep Learning}{: PyTorch, TorchScript, CUDA/GPU Batching, Computer Vision (SSCD, Contrastive Learning)} \\
+     \textbf{Developer Tools \& Testing}{: Docker, Git, Maven, Postman, JUnit 5, Mockito, CI/CD Pipelines, Linux}
+    }}
+ \end{itemize}
+
+%-----------EXPERIENCE-----------
+\section{Professional Experience}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {HSBC Technology India}{Pune, Maharashtra}
+      {Software Engineer — Production Systems \& Reliability}{Aug 2023 -- Jun 2025}
+      \resumeItemListStart
+        \resumeItem{Engineered and maintained enterprise end-of-day (EOD) financial batch processing pipelines across multi-node GCP clusters, ensuring strict SLA adherence for downstream settlement ledgers.}
+        \resumeItem{Profiled and optimized complex SQL and Google BigQuery queries, eliminating indexing bottlenecks and reducing runtimes across multi-million row financial transaction datasets.}
+        \resumeItem{Diagnosed critical L2/L3 production incidents via centralized log telemetry; drove root-cause analysis (RCA) and partnered with development squads to validate and deploy zero-downtime hotfixes.}
+        \resumeItem{Automated pipeline recovery workflows and data ingestion jobs using GCP Cloud Scheduler and BigQuery integrations, maintaining 99.9\% processing uptime.}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+%-----------PROJECTS-----------
+\section{Projects}
+    \resumeSubHeadingListStart
+
+      \resumeProjectHeading
+          {\textbf{Distributed Fintech Wallet Service} $|$ \emph{Java 17, Spring Boot, PostgreSQL, Redis, Docker}}{}
+          \resumeItemListStart
+            \resumeItem{Architected a high-concurrency digital wallet service handling balance management, peer-to-peer transfers, and transaction ledgers with strict financial consistency guarantees.}
+            \resumeItem{Prevented race conditions and double-spending under high concurrency using ordered pessimistic row-level locking (\texttt{SELECT ... FOR UPDATE}) within bounded \texttt{@Transactional} boundaries.}
+            \resumeItem{Implemented distributed idempotency keys via Redis TTL, preventing duplicate payment submissions across transient client network retries.}
+            \resumeItem{Engineered a database-backed Transactional Outbox Pattern with an asynchronous retry state worker to decouple event publishing from core transactions, eliminating dual-write inconsistencies.}
+            \resumeItem{Developed comprehensive integration test suites using JUnit 5 and Mockito, thoroughly validating concurrent race conditions, transaction rollbacks, and idempotency states.}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{Multi-Source Image Lineage Retrieval Pipeline} $|$ \emph{PyTorch, Meta SSCD, TorchScript, CUDA}}{}
+          \resumeItemListStart
+            \resumeItem{Developed an end-to-end visual provenance retrieval pipeline to detect and trace spliced donor image components against a 1,000+ image candidate gallery on the MS-COCO dataset.}
+            \resumeItem{Engineered a 3-tier Dynamic Slicing hierarchy (Global, Anchor, and Overlapping Slices) overcoming spatial fragmentation pitfalls of rigid grids, increasing Recall@5 from 53.3\% to 75.5\%.}
+            \resumeItem{Designed a 2-layer MLP Importance Gating network using Contrastive Margin Loss to suppress background distractors, boosting full lineage retrieval accuracy to \textbf{88.89\% Recall@5} (+37.8\% over baseline).}
+            \resumeItem{Implemented batched GPU tensor extraction in PyTorch with L2-normalized 512-D descriptors, slashing gallery indexing latency from 28 minutes to under \textbf{45 seconds}.}
+          \resumeItemListEnd
+
+    \resumeSubHeadingListEnd
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {National Institute of Technology Meghalaya}{Sohra, India}
+      {Master of Technology (M.Tech) in Computer Science and Engineering}{Expected 2027}
+    \resumeSubheading
+      {Graphic Era University}{Dehradun, India}
+      {Bachelor of Technology (B.Tech) in Computer Science and Engineering}{2023}
+  \resumeSubHeadingListEnd
+
+%-----------ACHIEVEMENTS-----------
+\section{Key Achievements}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Indian Air Force SSB Recommendation}: Recommended for Flying Officer position by Air Force Selection Board (\textbf{AFSB Varanasi}) for AFCAT 1, 2024 (top $\sim$1\% selection rate across 5-day psychological, situational, and leadership evaluations). \\
+     \textbf{Algorithmic Problem Solving}: Solved \textbf{270+ problems on LeetCode} spanning Data Structures, Dynamic Programming, Graphs, and Concurrency.
+    }}
+ \end{itemize}
+
+%-------------------------------------------
+\end{document}
